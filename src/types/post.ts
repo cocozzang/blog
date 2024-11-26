@@ -4,6 +4,8 @@ export interface Post {
   date: string;
   excerpt: string;
   content: string;
+  category: string;
+  tags: string[];
 }
 
 export interface PostMeta {

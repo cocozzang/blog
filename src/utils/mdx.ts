@@ -17,6 +17,8 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       title: data.title,
       date: data.date,
       excerpt: data.excerpt,
+      category: data.category || "Uncategorized", // 카테고리가 없을 경우 기본값 설정
+      tags: data.tags || [], // 태그가 없을 경우 빈 배열 설정
       content,
     };
   } catch (error) {
@@ -46,6 +48,37 @@ export async function getAllPosts(): Promise<Post[]> {
     console.error("Error getting all posts:", error);
     return [];
   }
+}
+
+export function getCategoriesWithCount(posts: Post[]) {
+  const categories = posts.reduce(
+    (acc, post) => {
+      const category = post.category;
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  return Object.entries(categories)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export function getTagsWithCount(posts: Post[]) {
+  const tags = posts.reduce(
+    (acc, post) => {
+      post.tags.forEach((tag) => {
+        acc[tag] = (acc[tag] || 0) + 1;
+      });
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  return Object.entries(tags)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
 }
 
 export const mdxOptions = {
