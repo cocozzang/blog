@@ -3,8 +3,35 @@ import path from "path";
 import matter from "gray-matter";
 import { Post } from "@/types/post";
 import rehypePrettyCode from "rehype-pretty-code";
+import type {} from "next-mdx-remote";
+import { SerializeOptions } from "@/types/mdx";
 
 const postsDirectory = path.join(process.cwd(), "src/content/posts");
+
+/** @type {import('rehype-pretty-code').Options} */
+export const mdxOptions: SerializeOptions = {
+  parseFrontmatter: false,
+  mdxOptions: {
+    rehypePlugins: [
+      [
+        rehypePrettyCode,
+        {
+          onVisitLine(node: any) {
+            if (node.children.length === 0) {
+              node.children = [{ type: "text", value: " " }];
+            }
+          },
+          onVisitHighlightedLine(node: any) {
+            node.properties.className.push("highlighted");
+          },
+          onVisitHighlightedWord(node: any) {
+            node.properties.className = ["word"];
+          },
+        },
+      ],
+    ],
+  },
+};
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
@@ -17,9 +44,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       title: data.title,
       date: data.date,
       excerpt: data.excerpt,
-      category: data.category || "Uncategorized", // 카테고리가 없을 경우 기본값 설정
-      tags: data.tags || [], // 태그가 없을 경우 빈 배열 설정
-      content,
+      category: data.category || "Uncategorized",
+      tags: data.tags || [],
+      content: content, // 원본 MDX 문자열을 저장
     };
   } catch (error) {
     console.error(`Error getting post ${slug}:`, error);
@@ -80,29 +107,3 @@ export function getTagsWithCount(posts: Post[]) {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
 }
-
-export const mdxOptions = {
-  mdxOptions: {
-    rehypePlugins: [
-      [
-        rehypePrettyCode,
-        {
-          theme: "github-dark",
-          onVisitLine(node: any) {
-            // Prevent lines from collapsing in `display: grid` mode, and
-            // allow empty lines to be copy/pasted
-            if (node.children.length === 0) {
-              node.children = [{ type: "text", value: " " }];
-            }
-          },
-          onVisitHighlightedLine(node: any) {
-            node.properties.className.push("highlighted");
-          },
-          onVisitHighlightedWord(node: any) {
-            node.properties.className = ["word"];
-          },
-        },
-      ],
-    ],
-  },
-};

@@ -35,12 +35,12 @@ export default function RootLayout({
                 My Blog
               </Link>
               <div className="space-x-4">
-                <a href="/posts" className="hover:text-gray-600">
+                <Link href="/posts" className="hover:text-gray-600">
                   Posts
-                </a>
-                <a href="/about" className="hover:text-gray-600">
+                </Link>
+                <Link href="/about" className="hover:text-gray-600">
                   About
-                </a>
+                </Link>
               </div>
             </nav>
           </div>

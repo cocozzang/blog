@@ -19,3 +19,36 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Syntax highlighting */
+[data-rehype-pretty-code-fragment] {
+  @apply relative;
+}
+
+[data-rehype-pretty-code-fragment] code {
+  @apply grid min-w-full break-words rounded-none border-0 bg-transparent p-0;
+  counter-reset: line;
+  box-decoration-break: clone;
+}
+
+[data-rehype-pretty-code-fragment] .line {
+  @apply px-4 py-1;
+}
+
+[data-rehype-pretty-code-fragment] .line--highlighted {
+  @apply bg-slate-800;
+}
+
+[data-rehype-pretty-code-fragment] .word {
+  @apply rounded-md bg-slate-800 p-1;
+}
+
+/* 코드 블록 스타일 */
+pre {
+  @apply overflow-x-auto rounded-lg bg-[#1e1e1e] p-2;
+}
+
+/* 인라인 코드 스타일 */
+:not(pre) > code {
+  @apply rounded bg-slate-800 px-1.5 py-0.5 text-[0.9em] text-slate-200;
+}
