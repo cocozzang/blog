@@ -1,0 +1,169 @@
+---
+title: "Windows10에서 WSL2로 Arch Linux 설치하기"
+date: "2024-11-27"
+excerpt: "Windows 10 환경에서 WSL2를 사용하여 Arch Linux를 설치하고 설정하는 방법을 안내합니다."
+category: "Development"
+tags: ["wsl", "arch"]
+---
+
+## 목차
+
+1. [WSL 사용 준비](#wsl-setting)
+2. [Arch Linux 설치](#arch-install)
+3. [시스템 설정](#system-setting)
+4. [참고자료](#reference)
+5. [추가사항](#additional)
+
+<h2 id="wsl-setting">WSL 사용 준비</h2>
+
+- 바이오스에서 cpu가상화 허용
+- windows 기능 켜기/끄기
+
+바이오스에서 cpu가상화 허용
+
+작업관리자 → 성능 탭에서 cpu를 클릭하면 가상화 사용여부를 확인할수있다.
+
+![cpu가상화확인.png](/images/posts/window10-wsl2-arch-setting/cpu-vt-confirm.png)
+
+윈도우 하단바에서 windows 기능 켜기/끄기를 검색 후
+
+아래 4가지 항목을 선택한다.
+
+- Hyper-V
+- Linux용 Windows 하위 시스템
+- Windows 하이퍼바이저 플랫폼
+- 가상 머신 플랫폼
+
+선택 후 확인버튼을 누르면 기능에 필요한 것들이 설치되고 재시작하라는 요청을 따르면된다.
+
+![windows 기능 선택사항.png](/images/posts/window10-wsl2-arch-setting/windows-feature-selection.png)
+
+위 단계가 끝나면 이제 wsl 사용이 가능하다 터미널에서
+
+wsl -l —online으로 설치가능한 배포판을 확인해보자.  
+( 만약 wsl명령어 실행이 안된다면 위의 절차를 다시 실행해보자. )
+
+해당 list에는 arch linux가 없는 것을 확인 할 수 있다.
+
+wsl에서 관리되는 remote distro repository에 arch가 없기 떄문이다.
+
+직접 arch linux tar파일을 받아서 wsl에 import시켜주자.
+
+<h2 id="arch-install">Arch Linux 설치</h2>
+
+arch를 wsl에 import하기 위해 arch tar파일이 필요하다.
+
+- arch linux tar파일 다운받기
+  아래 링크에서 multilib-devel-[버전].tar.zst파일을 받아주자 ( 32bit )
+
+`https://gitlab.archlinux.org/archlinux/archlinux-docker/-/releases`
+
+압축을 해제하고 tar파일을 설치하고자하는 드라이브에 옮겨주자.
+
+```powershell
+# wsl —import arch [설치결로] [tar파일경로]
+# 아래 명령어를 입력하면 이제 wsl에서 arch 사용이 가능해진다.
+wsl —import arch G:/wsl/distros/arch G:/multilib-devel-[버전].tar.zst
+
+wsl -l -v
+# arch가 리스트에 보일끼다. wsl버전이 1일텐데 잠시후 바꾸면 된다.
+```
+
+<h2 id="system-setting">시스템 설정</h2>
+
+### arch user 추가
+
+```bash
+wsl -d arch
+
+# root 비밀번호 및 user 추가
+passwd root
+useradd -m username -G wheel
+passwd username
+
+# nvim 설치
+pacman-key —-init
+pacman -Syu
+pacman -S neovim git
+
+# wsl에서 arch 실행시에 기본유저
+sudo nvim /etc/wsl.conf
+# 아래내용을 추가
+[user]
+default=username
+
+# 추가한 user에 root 권한 허용
+sudo nvim /etc/sudoers
+# 맽 밑내용에 root ALL=(ALL:ALL) ALL가 있을끼다. 그 아랫줄에추가
+username ALL=(ALL:ALL) ALL
+```
+
+### arch locale 설정
+
+```bash
+locale # 현재 locale 설정확인
+
+/etc/locale.gen에서 en_US.UTF-8 UTF-8 을 주석해제
+
+sudo locale-gen
+
+locale # locale 적용확인
+```
+
+### WSL 버전 설정
+
+```powershell
+wsl.exe --update
+wsl --set-version arch 2
+```
+
+### Windows Terminal 프로필 설정
+
+ms store에서 arch linux를 설치하면 window terminal profile에 arch 추가된다.
+
+- arch 프로필 설정
+- 기본 프로필을 arch로
+- 명령줄을 wsl -d arch로 바꾸고
+- 관리자 권한 실행 허용
+- profile image변경
+
+이제 wsl 재시작후에 default user로 쉘진입을 확인한다. wsl.conf 변경사항이 적용되는데는
+
+시간이 걸린다 (8 sec rule)
+
+github에서 dotfiles를 clone받고 세팅해주면 된다.
+
+<h2 id="reference">참고자료</h2>
+
+[wikidocs, WSL 설치와 실행](https://wikidocs.net/219899)
+
+[Saber Hosney, youtube, Installing ARchlinux OS on WSL Complete Guide](https://www.youtube.com/watch?v=36gj0_dO4hg&t=311s)
+
+[gitlab, Arch Releases](https://gitlab.archlinux.org/archlinux/archlinux-docker/-/releases)
+
+<h2 id="additional">추가사항</h2>
+
+### 4-1. docker 설치과정에서 발견한 문제
+
+systemctl가 아래처럼 실행이 안되더라
+
+```shell
+$ systemctl
+System has not been booted with systemd as init system (PID 1). Can't operate.
+Failed to connect to system scope bus via local transport: Host is down
+```
+
+wsl arch의 init system을 systemd를 아래처럼 바꾸고 재시작해도 systemd가 실행안되더라.
+
+```bash
+# https://learn.microsoft.com/ko-kr/windows/wsl/systemd
+# wsl의 init 시스템 boot loader은 systemd나 glub
+# wsl version을 2로 설정하고 아래내용을 추가하자
+# /etc/wsl.conf
+[boot]
+systemd=true
+```
+
+dockerd는 수동으로 켜서 사용하자
+
+dockerd가 필요할떄 사용할수있게끔 dotfile의 .zsh_aliases에 넣어둿다.
