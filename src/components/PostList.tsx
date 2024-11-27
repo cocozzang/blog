@@ -11,7 +11,7 @@ interface PostListProps {
 }
 
 export default function PostList({ initialPosts }: PostListProps) {
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [posts] = useState<Post[]>(initialPosts);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>(initialPosts);
   const searchParams = useSearchParams();
 
@@ -40,7 +40,7 @@ export default function PostList({ initialPosts }: PostListProps) {
         (post) =>
           post.title.toLowerCase().includes(q) ||
           post.excerpt.toLowerCase().includes(q) ||
-          post.content.toLowerCase().includes(q),
+          post.content.toString().toLowerCase().includes(q),
       );
     }
 
@@ -49,11 +49,9 @@ export default function PostList({ initialPosts }: PostListProps) {
 
   return (
     <>
-      {searchParams.get("q") && (
-        <p className="mb-4 text-gray-600">
-          검색결과: {filteredPosts.length}개의 포스트를 찾았습니다.
-        </p>
-      )}
+      <p className="mb-4 text-gray-600">
+        검색결과: {filteredPosts.length}개의 포스트를 찾았습니다.
+      </p>
 
       <div className="grid gap-6">
         {filteredPosts.map((post) => (
@@ -71,7 +69,7 @@ export default function PostList({ initialPosts }: PostListProps) {
               <time className="text-sm text-gray-500">
                 {formatDate(post.date)}
               </time>
-              <span className="text-sm bg-gray-100 px-2 py-1 rounded">
+              <span className="text-sm bg-gray-100 px-2 py-1 rounded text-black">
                 {post.category}
               </span>
               <div className="flex gap-1">
