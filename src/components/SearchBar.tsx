@@ -25,7 +25,7 @@ export default function SearchBar() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder="포스트 검색..."
-        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+        className="w-full text-black px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
         aria-label="Search posts"
       />
       {searchTerm && (
