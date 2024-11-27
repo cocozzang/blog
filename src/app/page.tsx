@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default async function Home() {
   const posts = await getAllPosts();
+  const recentPosts = posts.length > 3 ? posts.slice(0, 3) : posts;
 
   return (
     <div className="space-y-8">
@@ -18,7 +19,7 @@ export default async function Home() {
       <section>
         <h2 className="text-2xl font-bold mb-4">최근 포스트</h2>
         <div className="grid gap-6">
-          {posts.map((post: Post) => (
+          {recentPosts.map((post: Post) => (
             <article
               key={post.slug}
               className="border rounded-lg p-6 hover:shadow-lg transition-shadow"
