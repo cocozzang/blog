@@ -10,9 +10,14 @@ export default async function Home() {
   return (
     <div className="space-y-8">
       <section className="text-center py-20 space-y-4">
-        <h1 className="text-4xl font-bold">Welcome to My Blog</h1>
-        <p className="text-xl text-gray-600">
-          개발 여정을 기록하는 공간입니다.
+        <h1 className="text-4xl font-bold overflow-hidden whitespace-nowrap">
+          Welcome to coco&apos;s Blog
+        </h1>
+        <p
+          className="text-xl text-gray-600 overflow-hidden whitespace-nowrap"
+          style={{ animationDelay: "1s" }}
+        >
+          개발과 일상의 이야기를 담아내는 공간입니다.
         </p>
       </section>
 

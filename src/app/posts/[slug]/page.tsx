@@ -8,9 +8,9 @@ import Link from "next/link";
 import { Calendar, Folder } from "lucide-react";
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // 동적 메타데이터 생성

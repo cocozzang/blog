@@ -11,7 +11,6 @@ const withMDX = createMDX({
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 

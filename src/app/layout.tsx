@@ -24,8 +24,9 @@ export default function RootLayout({
         <NavBar />
         <main className="max-w-4xl mx-auto p-4">{children}</main>
         <footer className="border-t mt-8">
-          <div className="max-w-4xl mx-auto p-4 text-center text-gray-600">
-            © {new Date().getFullYear()} My Blog. All rights reserved.
+          <div className="max-w-4xl mx-auto p-4 text-center text-gray-600 text-sm">
+            © {new Date().getFullYear()} Coco&apos;s Blog. 대충 right에 관련된
+            말.
           </div>
         </footer>
       </body>
