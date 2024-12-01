@@ -9,6 +9,18 @@ import TagList from "@/components/TagList";
 import PostList from "@/components/PostList";
 import { Suspense } from "react";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Post search",
+  description: "포스트 검색",
+  openGraph: {
+    title: "Post search",
+    description: "포스트 검색",
+    type: "website",
+  },
+};
+
 export default async function PostsPage() {
   const posts = await getAllPosts();
 

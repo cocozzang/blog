@@ -2,6 +2,17 @@ import { getAllPosts } from "@/utils/mdx";
 import { Post } from "@/types/post";
 import { formatDate } from "@/utils/date";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "coco's Blog",
+  description: "개발과 일상의 이야기를 담아내는 공간입니다.",
+  openGraph: {
+    title: "coco's Blog",
+    description: "개발과 일상의 이야기를 담아내는 공간입니다.",
+    type: "website",
+  },
+};
 
 export default async function Home() {
   const posts = await getAllPosts();
