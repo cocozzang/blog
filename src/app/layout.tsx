@@ -20,6 +20,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko" className={pretendard.variable}>
+      <head>
+        <link
+          rel="icon"
+          type="image/png"
+          href="/icons/favicon-96x96.png"
+          sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+        <link rel="shortcut icon" href="/icons/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/apple-touch-icon.png"
+        />
+        <meta name="apple-mobile-web-app-title" content="Coco's Blog" />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
       <body className={`${pretendard.className} font-sans`}>
         <NavBar />
         <main className="max-w-4xl mx-auto p-4">{children}</main>
